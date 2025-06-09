@@ -1,0 +1,12 @@
+campo-cidade-jogo/
+│── index.html
+│── style.css
+│── script.js
+│── assets/
+│   ├── fazendeiro.png
+│   ├── caminhao.png
+│   ├── vaca.png
+│   ├── vegetal.png
+│   ├── prédio.png
+│   ├── campo-bg.png
+│   └── cidade-bg.png
