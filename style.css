@@ -1,0 +1,126 @@
+body {
+    margin: 0;
+    padding: 0;
+    overflow: hidden;
+    font-family: Arial, sans-serif;
+}
+
+#game-container {
+    position: relative;
+    width: 100vw;
+    height: 100vh;
+    background: linear-gradient(to bottom, #7CFC00 50%, #708090 50%);
+    background-size: 100% 200%;
+    background-position: 0 0;
+    transition: background-position 0.5s;
+}
+
+#road {
+    position: absolute;
+    width: 200px;
+    height: 100%;
+    left: 50%;
+    transform: translateX(-50%);
+    background-color: #333;
+}
+
+#dirt-road {
+    position: absolute;
+    width: 200px;
+    height: 50%;
+    left: 50%;
+    transform: translateX(-50%);
+    background-color: #8B4513;
+    transition: height 0.5s;
+}
+
+.lane-marker {
+    position: absolute;
+    width: 20px;
+    height: 80px;
+    left: 50%;
+    transform: translateX(-50%);
+    background-color: #fff;
+}
+
+#lane-marker1 {
+    top: 0;
+}
+
+#lane-marker2 {
+    top: 200px;
+}
+
+#lane-marker3 {
+    top: 400px;
+}
+
+#lane-marker4 {
+    top: 600px;
+}
+
+#player-car {
+    position: absolute;
+    width: 60px;
+    height: 100px;
+    bottom: 50px;
+    left: 50%;
+    transform: translateX(-50%);
+    background-color: #FF0000;
+    border-radius: 10px;
+    transition: left 0.3s;
+}
+
+#player-car:before {
+    content: "";
+    position: absolute;
+    width: 40px;
+    height: 20px;
+    top: 10px;
+    left: 10px;
+    background-color: #ADD8E6;
+    border-radius: 5px;
+}
+
+.obstacle {
+    position: absolute;
+    width: 60px;
+    height: 60px;
+    background-color: #4682B4;
+    border-radius: 5px;
+}
+
+#score {
+    position: absolute;
+    top: 20px;
+    left: 20px;
+    font-size: 24px;
+    color: white;
+    text-shadow: 2px 2px 4px black;
+}
+
+#game-over {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    font-size: 48px;
+    color: white;
+    text-shadow: 2px 2px 4px black;
+    display: none;
+}
+
+#restart-btn {
+    position: absolute;
+    top: 60%;
+    left: 50%;
+    transform: translateX(-50%);
+    padding: 10px 20px;
+    font-size: 20px;
+    background-color: #4CAF50;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    display: none;
+}
