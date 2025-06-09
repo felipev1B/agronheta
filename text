@@ -1,12 +1,14 @@
-campo-cidade-jogo/
-│── index.html
-│── style.css
-│── script.js
-│── assets/
-│   ├── fazendeiro.png
-│   ├── caminhao.png
-│   ├── vaca.png
-│   ├── vegetal.png
-│   ├── prédio.png
-│   ├── campo-bg.png
-│   └── cidade-bg.png
+campo-cidade-vercel/
+├── public/
+│   ├── assets/
+│   │   ├── fazendeiro.png
+│   │   ├── caminhao.png
+│   │   ├── vaca.png
+│   │   ├── vegetal.png
+│   │   ├── predio.png
+│   │   ├── campo-bg.jpg
+│   │   └── cidade-bg.jpg
+│   ├── index.html
+│   ├── style.css
+│   └── script.js
+└── vercel.json
