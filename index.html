@@ -3,43 +3,50 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Campo vs Cidade | Vercel</title>
-    <link rel="stylesheet" href="/style.css">
+    <title>Campo-Cidade: O Equilíbrio</title>
+    <link rel="stylesheet" href="style.css">
 </head>
 <body>
-    <div id="game-container">
-        <div id="campo-section" class="game-area">
-            <div id="campo-recursos"></div>
-        </div>
-        <div id="transicao-section">
-            <div id="player-vehicle"></div>
-        </div>
-        <div id="cidade-section" class="game-area">
-            <div id="cidade-recursos"></div>
-        </div>
-        
-        <div id="hud">
-            <div id="score">Produção: <span>0</span></div>
-            <div id="tempo">Tempo: <span>60</span>s</div>
-            <div id="recursos">
-                <span id="alimentos">Alimentos: 0</span>
-                <span id="materiais">Materiais: 0</span>
+    <div class="game-container">
+        <header>
+            <h1>Campo-Cidade: O Equilíbrio</h1>
+            <div class="stats">
+                <div class="stat">
+                    <span id="population">População: 1000</span>
+                </div>
+                <div class="stat">
+                    <span id="food">Alimentos: 500</span>
+                </div>
+                <div class="stat">
+                    <span id="environment">Meio Ambiente: 70%</span>
+                </div>
+                <div class="stat">
+                    <span id="economy">Economia: 50</span>
+                </div>
             </div>
-        </div>
-        
-        <div id="start-screen">
-            <h1>Campo vs Cidade</h1>
-            <p>Transporte recursos entre o campo e a cidade!</p>
-            <button id="start-btn">Começar</button>
-        </div>
-        
-        <div id="game-over-screen" class="hidden">
-            <h2>Fim do Jogo!</h2>
-            <p>Sua produção total: <span id="final-score">0</span></p>
-            <button id="restart-btn">Jogar Novamente</button>
-        </div>
+        </header>
+
+        <main>
+            <div class="scene" id="scene">
+                <div class="city-area"></div>
+                <div class="countryside-area"></div>
+            </div>
+            
+            <div class="event-container" id="event-container">
+                <h2 id="event-title">Bem-vindo ao Campo-Cidade!</h2>
+                <p id="event-description">Você é o responsável por tomar decisões que afetam tanto a cidade quanto o campo. Seu objetivo é manter um equilíbrio entre desenvolvimento urbano e preservação rural. Boa sorte!</p>
+                
+                <div class="choices" id="choices">
+                    <button class="btn" onclick="startGame()">Começar</button>
+                </div>
+            </div>
+        </main>
+
+        <footer>
+            <p>Desenvolvido para Vercel | Tema: Relação Campo-Cidade</p>
+        </footer>
     </div>
 
-    <script src="/script.js"></script>
+    <script src="script.js"></script>
 </body>
 </html>

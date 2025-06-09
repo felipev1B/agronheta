@@ -1,20 +1,146 @@
-/* Mesmo CSS da versão anterior, mas com caminhos de imagens atualizados */
-#campo-section {
-    background: url('/assets/campo-bg.jpg') no-repeat center/cover;
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
 }
 
-#cidade-section {
-    background: url('/assets/cidade-bg.jpg') no-repeat center/cover;
+body {
+    background-color: #f0f0f0;
+    color: #333;
+    line-height: 1.6;
 }
 
-#player-vehicle {
-    background: url('/assets/caminhao.png') no-repeat center/contain;
+.game-container {
+    max-width: 800px;
+    margin: 0 auto;
+    padding: 20px;
+    background-color: white;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    min-height: 100vh;
 }
 
-.recurso[data-type="alimento"] {
-    background: url('/assets/vaca.png') no-repeat center/contain;
+header {
+    text-align: center;
+    margin-bottom: 20px;
+    padding-bottom: 20px;
+    border-bottom: 1px solid #eee;
 }
 
-.recurso[data-type="material"] {
-    background: url('/assets/predio.png') no-repeat center/contain;
+h1 {
+    color: #2c3e50;
+    margin-bottom: 15px;
+}
+
+.stats {
+    display: flex;
+    justify-content: space-around;
+    flex-wrap: wrap;
+    gap: 10px;
+    margin-top: 15px;
+}
+
+.stat {
+    background-color: #f8f9fa;
+    padding: 8px 15px;
+    border-radius: 5px;
+    font-weight: bold;
+}
+
+.scene {
+    height: 200px;
+    background: linear-gradient(to right, #a5d6a7 50%, #90caf9 50%);
+    margin-bottom: 20px;
+    position: relative;
+    border-radius: 8px;
+    overflow: hidden;
+}
+
+.city-area, .countryside-area {
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    width: 50%;
+}
+
+.city-area {
+    right: 0;
+    background-color: rgba(144, 202, 249, 0.3);
+}
+
+.countryside-area {
+    left: 0;
+    background-color: rgba(165, 214, 167, 0.3);
+}
+
+.event-container {
+    background-color: #fff;
+    padding: 20px;
+    border-radius: 8px;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+}
+
+.event-container h2 {
+    color: #2c3e50;
+    margin-bottom: 10px;
+}
+
+.event-container p {
+    margin-bottom: 20px;
+}
+
+.choices {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.btn {
+    padding: 10px 15px;
+    border: none;
+    border-radius: 5px;
+    background-color: #3498db;
+    color: white;
+    cursor: pointer;
+    font-size: 16px;
+    transition: background-color 0.3s;
+}
+
+.btn:hover {
+    background-color: #2980b9;
+}
+
+.btn:nth-child(2) {
+    background-color: #2ecc71;
+}
+
+.btn:nth-child(2):hover {
+    background-color: #27ae60;
+}
+
+.btn:nth-child(3) {
+    background-color: #e74c3c;
+}
+
+.btn:nth-child(3):hover {
+    background-color: #c0392b;
+}
+
+footer {
+    text-align: center;
+    margin-top: 30px;
+    padding-top: 20px;
+    border-top: 1px solid #eee;
+    color: #7f8c8d;
+}
+
+/* Responsividade */
+@media (max-width: 600px) {
+    .stats {
+        flex-direction: column;
+    }
+    
+    .scene {
+        height: 150px;
+    }
 }

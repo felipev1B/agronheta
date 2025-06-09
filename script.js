@@ -1,235 +1,280 @@
 // Variáveis do jogo
-let score = 0;
-let timeLeft = 60;
-let alimentos = 0;
-let materiais = 0;
-let gameInterval;
-let timerInterval;
-let isMoving = false;
-let currentPosition = 'campo'; // 'campo' ou 'cidade'
-let obstacles = [];
+let gameState = {
+    population: 1000,
+    food: 500,
+    environment: 70,
+    economy: 50,
+    turn: 0
+};
+
+// Eventos do jogo
+const events = [
+    {
+        title: "Expansão Urbana",
+        description: "Os moradores da cidade querem expandir as áreas residenciais para acomodar o crescimento populacional. Isso exigirá converter terras agrícolas em áreas urbanas.",
+        choices: [
+            {
+                text: "Aprovar a expansão (aumenta população, reduz alimentos)",
+                effects: {
+                    population: 200,
+                    food: -100,
+                    environment: -10
+                }
+            },
+            {
+                text: "Limitar a expansão (pequeno aumento populacional, mantém alimentos)",
+                effects: {
+                    population: 50,
+                    economy: -10
+                }
+            },
+            {
+                text: "Investir em prédios mais altos (custo econômico, preserva terras agrícolas)",
+                effects: {
+                    economy: -20,
+                    population: 100,
+                    environment: 5
+                }
+            }
+        ]
+    },
+    {
+        title: "Uso de Pesticidas",
+        description: "Agricultores querem usar pesticidas mais fortes para aumentar a produção de alimentos, mas ambientalistas alertam sobre os riscos.",
+        choices: [
+            {
+                text: "Permitir pesticidas (aumenta alimentos, reduz meio ambiente)",
+                effects: {
+                    food: 150,
+                    environment: -15
+                }
+            },
+            {
+                text: "Proibir pesticidas fortes (mantém meio ambiente, alimentos estáveis)",
+                effects: {
+                    economy: -10,
+                    environment: 5
+                }
+            },
+            {
+                text: "Subsidiar agricultura orgânica (custo econômico, benefícios a longo prazo)",
+                effects: {
+                    economy: -30,
+                    food: 50,
+                    environment: 10
+                }
+            }
+        ]
+    },
+    {
+        title: "Transporte Público",
+        description: "A cidade precisa melhorar seu sistema de transporte para reduzir congestionamentos e poluição.",
+        choices: [
+            {
+                text: "Construir mais estradas (melhora economia a curto prazo, prejudica ambiente)",
+                effects: {
+                    economy: 15,
+                    environment: -10
+                }
+            },
+            {
+                text: "Investir em metrô (alto custo inicial, benefícios a longo prazo)",
+                effects: {
+                    economy: -40,
+                    population: 50,
+                    environment: 15
+                }
+            },
+            {
+                text: "Promover bicicletas e pedestres (baixo custo, pequeno impacto)",
+                effects: {
+                    economy: -10,
+                    environment: 5
+                }
+            }
+        ]
+    },
+    {
+        title: "Turismo Rural",
+        description: "Sugerem promover o turismo em áreas rurais para diversificar a economia, mas há preocupações com impactos ambientais.",
+        choices: [
+            {
+                text: "Promover agressivamente (aumenta economia, risco ambiental)",
+                effects: {
+                    economy: 30,
+                    environment: -15,
+                    food: -20
+                }
+            },
+            {
+                text: "Promover de forma sustentável (moderado benefício econômico)",
+                effects: {
+                    economy: 15,
+                    environment: -5,
+                    food: -5
+                }
+            },
+            {
+                text: "Rejeitar proposta (preserva ambiente e agricultura)",
+                effects: {
+                    economy: -10
+                }
+            }
+        ]
+    },
+    {
+        title: "Energia Renovável",
+        description: "Há uma proposta para instalar painéis solares em terras agrícolas, gerando energia limpa mas reduzindo área cultivável.",
+        choices: [
+            {
+                text: "Aprovar projeto grande (boa energia, reduz alimentos)",
+                effects: {
+                    environment: 20,
+                    food: -80,
+                    economy: 10
+                }
+            },
+            {
+                text: "Aprovar projeto pequeno (equilíbrio)",
+                effects: {
+                    environment: 10,
+                    food: -30,
+                    economy: 5
+                }
+            },
+            {
+                text: "Instalar em áreas urbanas (custo mais alto, preserva agricultura)",
+                effects: {
+                    environment: 15,
+                    economy: -20
+                }
+            }
+        ]
+    }
+];
 
 // Elementos do DOM
-const campoSection = document.getElementById('campo-section');
-const cidadeSection = document.getElementById('cidade-section');
-const playerVehicle = document.getElementById('player-vehicle');
-const scoreDisplay = document.querySelector('#score span');
-const timeDisplay = document.querySelector('#tempo span');
-const alimentosDisplay = document.getElementById('alimentos');
-const materiaisDisplay = document.getElementById('materiais');
-const startScreen = document.getElementById('start-screen');
-const gameOverScreen = document.getElementById('game-over-screen');
-const finalScoreDisplay = document.getElementById('final-score');
-const startBtn = document.getElementById('start-btn');
-const restartBtn = document.getElementById('restart-btn');
+const populationEl = document.getElementById('population');
+const foodEl = document.getElementById('food');
+const environmentEl = document.getElementById('environment');
+const economyEl = document.getElementById('economy');
+const eventTitleEl = document.getElementById('event-title');
+const eventDescriptionEl = document.getElementById('event-description');
+const choicesEl = document.getElementById('choices');
+const sceneEl = document.getElementById('scene');
 
-// Event Listeners
-startBtn.addEventListener('click', startGame);
-restartBtn.addEventListener('click', restartGame);
-document.addEventListener('keydown', handleKeyPress);
-
-// Funções do jogo
+// Iniciar jogo
 function startGame() {
-    startScreen.classList.add('hidden');
-    score = 0;
-    timeLeft = 60;
-    alimentos = 0;
-    materiais = 0;
-    currentPosition = 'campo';
-    
-    updateDisplays();
-    spawnRecursos();
-    spawnObstacles();
-    
-    timerInterval = setInterval(updateTimer, 1000);
-    gameInterval = setInterval(updateGame, 50);
+    gameState = {
+        population: 1000,
+        food: 500,
+        environment: 70,
+        economy: 50,
+        turn: 0
+    };
+    updateStats();
+    nextEvent();
 }
 
-function restartGame() {
-    gameOverScreen.classList.add('hidden');
-    clearObstacles();
-    startGame();
-}
-
-function updateGame() {
-    moveObstacles();
-    checkCollisions();
-}
-
-function updateTimer() {
-    timeLeft--;
-    timeDisplay.textContent = timeLeft;
+// Próximo evento
+function nextEvent() {
+    gameState.turn++;
     
-    if (timeLeft <= 0) {
+    if (gameState.turn > 5) {
         endGame();
-    }
-}
-
-function updateDisplays() {
-    scoreDisplay.textContent = score;
-    alimentosDisplay.textContent = `Alimentos: ${alimentos}`;
-    materiaisDisplay.textContent = `Materiais: ${materiais}`;
-}
-
-function spawnRecursos() {
-    // Limpa recursos existentes
-    document.querySelectorAll('.recurso').forEach(el => el.remove());
-    
-    // Cria recursos no campo (alimentos)
-    for (let i = 0; i < 5; i++) {
-        const recurso = document.createElement('div');
-        recurso.className = 'recurso';
-        recurso.style.backgroundImage = Math.random() > 0.5 ? 'url("assets/vaca.png")' : 'url("assets/vegetal.png")';
-        recurso.style.left = `${10 + Math.random() * 70}%`;
-        recurso.style.top = `${20 + Math.random() * 60}%`;
-        recurso.dataset.type = 'alimento';
-        recurso.addEventListener('click', coletarRecurso);
-        document.getElementById('campo-recursos').appendChild(recurso);
-    }
-    
-    // Cria recursos na cidade (materiais)
-    for (let i = 0; i < 5; i++) {
-        const recurso = document.createElement('div');
-        recurso.className = 'recurso';
-        recurso.style.backgroundImage = 'url("assets/prédio.png")';
-        recurso.style.left = `${10 + Math.random() * 70}%`;
-        recurso.style.top = `${20 + Math.random() * 60}%`;
-        recurso.dataset.type = 'material';
-        recurso.addEventListener('click', coletarRecurso);
-        document.getElementById('cidade-recursos').appendChild(recurso);
-    }
-}
-
-function spawnObstacles() {
-    clearObstacles();
-    
-    // Cria obstáculos na estrada
-    for (let i = 0; i < 3; i++) {
-        const obstaculo = document.createElement('div');
-        obstaculo.className = 'obstaculo';
-        obstaculo.style.left = `${30 + Math.random() * 40}%`;
-        obstaculo.style.top = `${Math.random() * 100}%`;
-        document.getElementById('transicao-section').appendChild(obstaculo);
-        
-        obstacles.push({
-            element: obstaculo,
-            speed: 1 + Math.random() * 2,
-            direction: Math.random() > 0.5 ? 1 : -1
-        });
-    }
-}
-
-function clearObstacles() {
-    obstacles = [];
-    document.querySelectorAll('.obstaculo').forEach(el => el.remove());
-}
-
-function moveObstacles() {
-    obstacles.forEach(obstacle => {
-        const currentTop = parseFloat(obstacle.element.style.top);
-        let newTop = currentTop + (obstacle.speed * obstacle.direction);
-        
-        if (newTop > 90 || newTop < 0) {
-            obstacle.direction *= -1;
-            newTop = currentTop + (obstacle.speed * obstacle.direction);
-        }
-        
-        obstacle.element.style.top = `${newTop}%`;
-    });
-}
-
-function checkCollisions() {
-    if (isMoving) {
-        const playerRect = playerVehicle.getBoundingClientRect();
-        
-        obstacles.forEach(obstacle => {
-            const obstacleRect = obstacle.element.getBoundingClientRect();
-            
-            if (rectsOverlap(playerRect, obstacleRect)) {
-                // Colisão detectada
-                score = Math.max(0, score - 10);
-                updateDisplays();
-                
-                // Efeito visual de colisão
-                playerVehicle.style.transform = 'translateX(-50%) scale(1.2)';
-                setTimeout(() => {
-                    playerVehicle.style.transform = 'translateX(-50%) scale(1)';
-                }, 300);
-            }
-        });
-    }
-}
-
-function rectsOverlap(rect1, rect2) {
-    return !(
-        rect1.right < rect2.left || 
-        rect1.left > rect2.right || 
-        rect1.bottom < rect2.top || 
-        rect1.top > rect2.bottom
-    );
-}
-
-function coletarRecurso(e) {
-    if (isMoving) return;
-    
-    const recurso = e.target;
-    const tipo = recurso.dataset.type;
-    
-    if ((currentPosition === 'campo' && tipo === 'alimento') || 
-        (currentPosition === 'cidade' && tipo === 'material')) {
-        
-        if (tipo === 'alimento') {
-            alimentos++;
-        } else {
-            materiais++;
-        }
-        
-        recurso.remove();
-        updateDisplays();
-    }
-}
-
-function transportarRecursos() {
-    if (isMoving || (currentPosition === 'campo' && alimentos === 0) || 
-        (currentPosition === 'cidade' && materiais === 0)) {
         return;
     }
     
-    isMoving = true;
+    const randomEvent = events[Math.floor(Math.random() * events.length)];
+    showEvent(randomEvent);
+}
+
+// Mostrar evento
+function showEvent(event) {
+    eventTitleEl.textContent = event.title;
+    eventDescriptionEl.textContent = event.description;
     
-    // Animação de movimento
-    playerVehicle.style.transition = 'left 2s linear';
+    choicesEl.innerHTML = '';
+    event.choices.forEach((choice, index) => {
+        const button = document.createElement('button');
+        button.className = 'btn';
+        button.textContent = choice.text;
+        button.onclick = () => makeChoice(choice.effects);
+        choicesEl.appendChild(button);
+    });
     
-    if (currentPosition === 'campo') {
-        playerVehicle.style.left = '100%';
-        currentPosition = 'cidade';
-        score += alimentos * 5;
-        alimentos = 0;
+    // Atualizar cena visual
+    updateScene();
+}
+
+// Fazer escolha
+function makeChoice(effects) {
+    for (const [key, value] of Object.entries(effects)) {
+        gameState[key] += value;
+        
+        // Garantir que os valores não fiquem negativos ou acima de certos limites
+        if (key === 'environment') gameState[key] = Math.max(0, Math.min(100, gameState[key]));
+        if (key === 'food') gameState[key] = Math.max(0, gameState[key]);
+    }
+    
+    updateStats();
+    
+    // Verificar condições de vitória/derrota
+    if (gameState.population <= 0 || gameState.food <= 0 || gameState.environment <= 0 || gameState.economy <= -100) {
+        endGame();
     } else {
-        playerVehicle.style.left = '0%';
-        currentPosition = 'campo';
-        score += materiais * 5;
-        materiais = 0;
+        nextEvent();
+    }
+}
+
+// Atualizar estatísticas
+function updateStats() {
+    populationEl.textContent = `População: ${gameState.population}`;
+    foodEl.textContent = `Alimentos: ${gameState.food}`;
+    environmentEl.textContent = `Meio Ambiente: ${gameState.environment}%`;
+    economyEl.textContent = `Economia: ${gameState.economy}`;
+}
+
+// Atualizar cena visual
+function updateScene() {
+    // Calcula proporções baseado nos stats
+    const cityRatio = 0.3 + (gameState.population / 5000) * 0.4;
+    const countrysideRatio = 0.3 + (gameState.food / 1000) * 0.4;
+    const environmentColor = `hsl(${gameState.environment * 1.2}, 70%, 50%)`;
+    
+    sceneEl.style.background = `
+        linear-gradient(
+            to right,
+            ${environmentColor} ${countrysideRatio * 50}%,
+            #90caf9 ${cityRatio * 50}%
+        )
+    `;
+}
+
+// Fim de jogo
+function endGame() {
+    let message = '';
+    
+    if (gameState.population <= 0) {
+        message = 'Sua população desapareceu! A cidade entrou em colapso.';
+    } else if (gameState.food <= 0) {
+        message = 'Fome generalizada! A falta de alimentos causou o caos.';
+    } else if (gameState.environment <= 0) {
+        message = 'Desastre ecológico! O meio ambiente foi destruído.';
+    } else if (gameState.economy <= -100) {
+        message = 'Falência! A economia entrou em colapso.';
+    } else if (gameState.turn > 5) {
+        message = `Parabéns! Você equilibrou campo e cidade por ${gameState.turn} turnos. 
+                   População: ${gameState.population}, 
+                   Alimentos: ${gameState.food}, 
+                   Meio Ambiente: ${gameState.environment}%, 
+                   Economia: ${gameState.economy}`;
     }
     
-    setTimeout(() => {
-        playerVehicle.style.transition = 'none';
-        playerVehicle.style.left = '50%';
-        isMoving = false;
-        updateDisplays();
-        spawnRecursos();
-    }, 2000);
+    eventTitleEl.textContent = 'Fim do Jogo';
+    eventDescriptionEl.textContent = message;
+    choicesEl.innerHTML = '<button class="btn" onclick="startGame()">Jogar Novamente</button>';
 }
 
-function handleKeyPress(e) {
-    if (e.code === 'Space') {
-        transportarRecursos();
-    }
-}
-
-function endGame() {
-    clearInterval(gameInterval);
-    clearInterval(timerInterval);
-    finalScoreDisplay.textContent = score;
-    gameOverScreen.classList.remove('hidden');
-}
+// Inicialização
+updateScene();
